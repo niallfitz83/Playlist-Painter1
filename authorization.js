@@ -6,6 +6,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fetch = require('node-fetch');
 const path = require('path');
+const getPlaylistRouter = require('./getPlaylist.js'); 
 
 const client_id = '1f41a373cee9493c94146c1db7553300';
 const client_secret = 'a97199ef1dfc4759b23586207fef729a'; 
@@ -26,7 +27,7 @@ let stateKey = 'spotify_auth_state'; // name of the cookie
 let app = express();
 
 app.use(session({
-    secret: '1234', // You should use a unique secret key
+    secret: '1234', 
     resave: false,
     saveUninitialized: true
 }));
@@ -34,6 +35,8 @@ app.use(session({
 app.use(express.static(__dirname + '/public'))
     .use(cors())
     .use(cookieParser());
+
+app.use('/', getPlaylistRouter);
 
 
 app.get('/login', function (req, res) { // handle login request on html page

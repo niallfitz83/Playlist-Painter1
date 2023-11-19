@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap');
+
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7;
+    background-color: #373737; /* Dark background similar to Spotify */
+    color: #999; /* Lighter text color for contrast */
     margin: 0;
     padding: 0;
     display: flex;
@@ -11,10 +14,11 @@ body {
 }
 
 .login-container {
-    background: white;
+    background: #282828; /* Darker background for the container */
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Stronger shadow for depth */
+    color: #FFF; /* White text color */
 }
 
 .login-button {
@@ -22,7 +26,7 @@ body {
     padding: 10px 20px;
     margin-top: 20px;
     border-radius: 20px;
-    background-color: #1DB954;
+    background-color: #1DB954; /* Spotify's signature green */
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -30,5 +34,5 @@ body {
 }
 
 .login-button:hover {
-    background-color: #1ED760;
+    background-color: #1ED760; /* Lighter green on hover */
 }

@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playlist Painter</title>
 </head>
-
 <body>
     <div id="login" class="container my-auto text-center">
         <h1 class="mb-1">Playlist Painter</h1>
-        <h3 class="mb-5"><em>Giving the your playlists their true identity</em></h3><a class="btn btn-primary btn-xl js-scroll-trigger" role="button" href="/login">Log in with Spotify</a>
+        <h3 class="mb-5"><em>Giving your playlists their true identity</em></h3>
+        <a class="btn btn-primary btn-xl js-scroll-trigger" role="button" href="/login">Log in with Spotify</a>
         <div class="overlay"></div>
     </div>
 
-    <div id="logged-in">
+    <div id="logged-in" style="display: none;">
         <h1>Logged in with Spotify!</h1>
-        <button id="refresh_token">Click to get started!</button>
+        <button id="fetch-playlists">Fetch Playlists</button>
+        <div id="playlist-container"></div>
     </div>
+
     <script src="authorization.js"></script>
     <script>
-
         function getHashParams() {
             let hashParams = {};
             let e, r = /([^&;=]+)=?([^&;]*)/g, 
@@ -42,27 +42,46 @@
             alert('There was an error during the authentication');
         } else {
             if (access_token) {
-                $('login').hide(); // change to login screen by hiding matching divs
-                $('#logged-in').show(); 
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('logged-in').style.display = 'block';
             } else {
-                $('#login').show();
-                $('#logged-in').hide();
-            };
-        };
+                document.getElementById('login').style.display = 'block';
+                document.getElementById('logged-in').style.display = 'none';
+            }
+        }
 
-        document.getElementById('refresh-token').addEventListener('click', function () {
-            $.ajax({
-                url: '/refresh_token', 
-                data: {
-                    'refresh_token': refresh_token
-                }
-            }).done(function (data) {
-                access_token = data.access_token;
-                console.log(`new access token: ${access_token}`);
-            });
-        }, false);
+        document.getElementById('fetch-playlists').addEventListener('click', async function () {
+            const response = await fetch('/playlists');
+            if (response.ok) {
+                const playlists = await response.json();
+                displayPlaylists(playlists);
+            } else {
+                console.error('Failed to fetch playlists');
+            }
+        });
 
+        function displayPlaylists(data) {
+    const container = document.getElementById('playlist-container');
+    container.innerHTML = ''; // Clear previous content
+    data.items.forEach(playlist => {
+        const div = document.createElement('div');
+        div.textContent = playlist.name;
+        div.style.cursor = 'pointer'; // Make it look clickable
+        div.onclick = () => fetchArtists(playlist.id); // Fetch artists on click
+        container.appendChild(div);
+    });
+}
+
+async function fetchArtists(playlistId) {
+    // Implement fetching artists from the server
+    const response = await fetch(`/artists?playlistId=${playlistId}`);
+    if (response.ok) {
+        const artists = await response.json();
+        // Process and display artists here
+    } else {
+        console.error('Failed to fetch artists');
+    }
+}
     </script>
 </body>
-
 </html>
