@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning the Auth Flow</title>
+    <title>Playlist Painter</title>
 </head>
 
 <body>
@@ -17,9 +17,9 @@
 
     <div id="logged-in">
         <h1>Logged in with Spotify!</h1>
-        <button id="refresh-token">Click to get started!</button>
+        <button id="refresh_token">Click to get started!</button>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="authorization.js"></script>
     <script>
 
         function getHashParams() {
@@ -42,7 +42,7 @@
             alert('There was an error during the authentication');
         } else {
             if (access_token) {
-                $('#login').hide(); 
+                $('login').hide(); // change to login screen by hiding matching divs
                 $('#logged-in').show(); 
             } else {
                 $('#login').show();
