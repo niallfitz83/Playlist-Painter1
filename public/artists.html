@@ -5,14 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artists and Genre</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
+    <div class="content-container">
     <h1>Most Popular Artists and Genre in Playlist</h1>
     <div id="artists-container">
-        <h2>Artists</h2>
     </div>
     <div id="genre-container">
-        <h2>Genre</h2>
+     </div>
     </div>
 
     <script>
@@ -49,20 +50,22 @@
 
 function displayArtists(artists) {
     const container = document.getElementById('artists-container');
-    container.innerHTML = ''; // Clear existing content
+    container.innerHTML = '<h2>Artists</h2>'; 
+    const list = document.createElement('ul'); // Creates list to display artists
     artists.forEach(artist => {
-        const div = document.createElement('div');
-        div.textContent = artist;
-        container.appendChild(div);
+        const listItem = document.createElement('li');
+        listItem.textContent = artist;
+        list.appendChild(listItem);
     });
+    container.appendChild(list);
 }
 
 function displayGenre(genre) {
     const container = document.getElementById('genre-container');
-    container.innerHTML = ''; // Clear existing content
-    const div = document.createElement('div');
-    div.textContent = 'Most Popular Genre: ' + genre;
-    container.appendChild(div);
+    container.innerHTML = '<h2>Genre</h2>'; 
+    const genreDiv = document.createElement('div');
+    genreDiv.textContent = 'Most Popular Genre: ' + genre;
+    container.appendChild(genreDiv);
 }
 
 fetchAndDisplayArtists();

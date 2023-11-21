@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playlist Painter</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <div id="login" class="container my-auto text-center">
-        <h1 class="mb-1">Playlist Painter</h1>
-        <h3 class="mb-5"><em>Giving your playlists their true identity</em></h3>
-        <a class="btn btn-primary btn-xl js-scroll-trigger" role="button" href="/login">Log in with Spotify</a>
-        <div class="overlay"></div>
+    <div id="login" class="login-container">
+        <h1>Playlist Painter</h1>
+        <h3><em>Giving your playlists their true identity</em></h3>
+        <a class="login-button" role="button" href="/login">Log in with Spotify</a>
     </div>
 
     <div id="logged-in" style="display: none;">
@@ -35,7 +35,6 @@
         let params = getHashParams();
 
         let access_token = params.access_token;
-        let refresh_token = params.refresh_token;
         let error = params.error;
 
         if (error) {
@@ -61,21 +60,21 @@
         });
 
         function displayPlaylists(data) {
-    const container = document.getElementById('playlist-container');
-    container.innerHTML = ''; // Clear previous content
-    data.items.forEach(playlist => {
-        const div = document.createElement('div');
-        div.textContent = playlist.name;
-        div.style.cursor = 'pointer'; // Make it look clickable
-        div.onclick = () => fetchArtists(playlist.id); // Fetch artists on click
-        container.appendChild(div);
-    });
-}
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = ''; // Clear previous content
+            data.items.forEach(playlist => {
+                const div = document.createElement('div');
+                div.textContent = playlist.name;
+                div.style.cursor = 'pointer'; // Make it look clickable
+                div.onclick = () => fetchArtists(playlist.id); // Fetch artists on click
+                container.appendChild(div);
+            });
+        }
 
-async function fetchArtists(playlistId) {
-     // Redirect to artists.html with the playlist ID as a query parameter
-     window.location.href = `artists.html?playlistId=${playlistId}`;
-}
+        async function fetchArtists(playlistId) {
+            // Redirect to artists.html with the playlist ID as a query parameter
+            window.location.href = `artists.html?playlistId=${playlistId}`;
+        }
     </script>
 </body>
 </html>
