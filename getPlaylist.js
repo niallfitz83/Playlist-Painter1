@@ -26,10 +26,6 @@ router.get('/playlists', async function (req, res) {
     }
 });
 
-module.exports = router;
-
-// ... existing code ...
-
 router.get('/artists', async function (req, res) {
     if (!req.session.access_token) {
         return res.status(401).send('Access token is missing');
@@ -45,7 +41,8 @@ router.get('/artists', async function (req, res) {
         const response = await fetch(playlistTracksEndpoint, authOptions);
         if (response.ok) {
             const data = await response.json();
-            const artists = extractPopularArtists(data.items); // Implement this function
+            // Call extractPopularArtists with await and pass the access token
+            const artists = await extractPopularArtists(data.items, req.session.access_token);
             res.send(artists);
         } else {
             res.status(response.status).send('Failed to fetch playlist tracks');
@@ -56,12 +53,47 @@ router.get('/artists', async function (req, res) {
     }
 });
 
-function extractPopularArtists(tracks) {
-    // Implement logic to extract and return popular artists from tracks
-    // This might involve additional API calls to Spotify to get artist popularity
+
+async function extractPopularArtists(tracks, access_token) {
+    const artistCounts = {};
+    const genreCounts = {};
+    const authOptions = {
+        headers: { 'Authorization': 'Bearer ' + access_token }
+    };
+
+    for (const track of tracks) {
+        const artists = track.track.artists;
+        for (const artist of artists) {
+            artistCounts[artist.name] = (artistCounts[artist.name] || 0) + 1;
+
+            try {
+                const artistResponse = await fetch(`https://api.spotify.com/v1/artists/${artist.id}`, authOptions);
+                if (artistResponse.ok) {
+                    const artistData = await artistResponse.json();
+                    if (artistData.genres && artistData.genres.length > 0) {
+                        artistData.genres.forEach(genre => {
+                            genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+                        });
+                    }
+                } else {
+                    console.error(`Failed to fetch genres for artist ${artist.name}`);
+                }
+            } catch (error) {
+                console.error(`Error fetching genres for artist ${artist.name}:`, error);
+            }
+        }
+    }
+
+    const mostPopularGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b, null);
+
+    const sortedArtists = Object.keys(artistCounts)
+        .map(name => ({ name, count: artistCounts[name] }))
+        .sort((a, b) => b.count - a.count);
+
+    return {
+        artists: sortedArtists.slice(0, 3).map(artist => artist.name),
+        mostPopularGenre
+    };
 }
 
-// ... existing code ...
-
 module.exports = router;
-

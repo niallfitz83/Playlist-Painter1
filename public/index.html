@@ -73,14 +73,8 @@
 }
 
 async function fetchArtists(playlistId) {
-    // Implement fetching artists from the server
-    const response = await fetch(`/artists?playlistId=${playlistId}`);
-    if (response.ok) {
-        const artists = await response.json();
-        // Process and display artists here
-    } else {
-        console.error('Failed to fetch artists');
-    }
+     // Redirect to artists.html with the playlist ID as a query parameter
+     window.location.href = `artists.html?playlistId=${playlistId}`;
 }
     </script>
 </body>

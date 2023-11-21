@@ -35,8 +35,8 @@ app.use(session({
 app.use(express.static(__dirname + '/public'))
     .use(cors())
     .use(cookieParser());
-
-app.use('/', getPlaylistRouter);
+    
+    app.use('/', getPlaylistRouter);
 
 
 app.get('/login', function (req, res) { // handle login request on html page

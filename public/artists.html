@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artists and Genre</title>
+</head>
+<body>
+    <h1>Most Popular Artists and Genre in Playlist</h1>
+    <div id="artists-container">
+        <h2>Artists</h2>
+    </div>
+    <div id="genre-container">
+        <h2>Genre</h2>
+    </div>
+
+    <script>
+        async function fetchAndDisplayArtists() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const playlistId = urlParams.get('playlistId');
+
+    if (!playlistId) {
+        console.error('Playlist ID is missing');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/artists?playlistId=${playlistId}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.artists && Array.isArray(data.artists)) {
+                displayArtists(data.artists);
+            } else {
+                console.error('Artists data is not in the expected format:', data);
+            }
+            if (data && data.mostPopularGenre) {
+                displayGenre(data.mostPopularGenre);
+            } else {
+                console.error('Genre data is missing', data);
+            }
+        } else {
+            console.error('Failed to fetch artists and genre');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function displayArtists(artists) {
+    const container = document.getElementById('artists-container');
+    container.innerHTML = ''; // Clear existing content
+    artists.forEach(artist => {
+        const div = document.createElement('div');
+        div.textContent = artist;
+        container.appendChild(div);
+    });
+}
+
+function displayGenre(genre) {
+    const container = document.getElementById('genre-container');
+    container.innerHTML = ''; // Clear existing content
+    const div = document.createElement('div');
+    div.textContent = 'Most Popular Genre: ' + genre;
+    container.appendChild(div);
+}
+
+fetchAndDisplayArtists();
+
+    </script>
+</body>
+</html>
