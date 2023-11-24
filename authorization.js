@@ -1,4 +1,4 @@
-//this code is from the Spotify for devolpers website with the guidance from Youtbube video
+//this code is from the Spotify for devolpers website with the guidance from Youtube video
 const express = require('express');
 const session = require('express-session');
 const querystring = require('querystring');
@@ -14,7 +14,7 @@ const redirect_uri = 'http://localhost:8081/callback';
 
 const generateRandomString = function (length) { 
     let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890'; // generates random string for the cookie
 
     for (let i = 0; i < length; i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -25,9 +25,9 @@ const generateRandomString = function (length) {
 let stateKey = 'spotify_auth_state';
 
 let app = express();
-
-app.use(session({
-    secret: '1234', 
+//handless the session
+app.use(session({  
+    secret: '1234', //signs the cookie, need to generate random string in future for security
     resave: false,
     saveUninitialized: true
 }));
@@ -53,7 +53,7 @@ app.get('/login', function (req, res) {
         }));
 });
 
-app.get('/callback', function (req, res) {
+app.get('/callback', function (req, res) {  //redirect back to app when user grants permission
     let code = req.query.code || null;
     let state = req.query.state || null;
     let storedState = req.cookies ? req.cookies[stateKey] : null;

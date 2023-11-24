@@ -21,7 +21,7 @@
     </div>
 
     <script src="authorization.js"></script>
-    <script>
+    <script>//code for the authorization video
         function getHashParams() {
             let hashParams = {};
             let e, r = /([^&;=]+)=?([^&;]*)/g, 
@@ -65,7 +65,7 @@
             data.items.forEach(playlist => {
                 const div = document.createElement('div');
                 div.textContent = playlist.name;
-                div.style.cursor = 'pointer'; // Make it look clickable
+                div.style.cursor = 'pointer'; // Make it selectable
                 div.onclick = () => fetchArtists(playlist.id); // Fetch artists on click
                 container.appendChild(div);
             });

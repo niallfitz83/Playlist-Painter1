@@ -6,7 +6,7 @@ router.get('/playlists', async function (req, res) {
     if (!req.session.access_token) {
         return res.status(401).send('Access token is missing');
     }
-
+// Code from Spotify for Developers website
     const playlistsEndpoint = 'https://api.spotify.com/v1/me/playlists';
     const authOptions = {
         headers: { 'Authorization': 'Bearer ' + req.session.access_token }
@@ -60,7 +60,7 @@ async function extractPopularArtists(tracks, access_token) {
     const authOptions = {
         headers: { 'Authorization': 'Bearer ' + access_token }
     };
-
+//Chatgbt assisted with this logic
     for (const track of tracks) {
         const artists = track.track.artists;
         for (const artist of artists) {
@@ -83,7 +83,7 @@ async function extractPopularArtists(tracks, access_token) {
             }
         }
     }
-
+// JavaScript : Getting key with the highest value from object video on youtube
     const mostPopularGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b, null);
 
     const sortedArtists = Object.keys(artistCounts)
@@ -97,3 +97,7 @@ async function extractPopularArtists(tracks, access_token) {
 }
 
 module.exports = router;
+
+//https://www.youtube.com/watch?v=gNvgI5imIiU
+//https://developer.spotify.com/documentation/web-api/reference/get-list-users-playlists
+//https://www.youtube.com/watch?v=D77ANP60DaU 
