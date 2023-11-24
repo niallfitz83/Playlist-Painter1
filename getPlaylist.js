@@ -83,7 +83,8 @@ async function extractPopularArtists(tracks, access_token) {
             }
         }
     }
-// JavaScript : Getting key with the highest value from object video on youtube
+// Finding the max value of a property in an array of objects- stackoverflow
+
     const mostPopularGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b, null);
 
     const sortedArtists = Object.keys(artistCounts)
@@ -101,3 +102,4 @@ module.exports = router;
 //https://www.youtube.com/watch?v=gNvgI5imIiU
 //https://developer.spotify.com/documentation/web-api/reference/get-list-users-playlists
 //https://www.youtube.com/watch?v=D77ANP60DaU 
+//https://stackoverflow.com/questions/4020796/finding-the-max-value-of-a-property-in-an-array-of-objects/4020842#4020842
