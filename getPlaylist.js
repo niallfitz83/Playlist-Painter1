@@ -60,7 +60,7 @@ async function extractPopularArtists(tracks, access_token) {
     const authOptions = {
         headers: { 'Authorization': 'Bearer ' + access_token }
     };
-//Chatgbt assisted with this logic
+
     for (const track of tracks) {
         const artists = track.track.artists;
         for (const artist of artists) {

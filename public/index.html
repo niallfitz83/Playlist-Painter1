@@ -48,12 +48,12 @@
                 document.getElementById('logged-in').style.display = 'none';
             }
         }
-
+// change this an async function so it displays after user is authenticated
         document.getElementById('fetch-playlists').addEventListener('click', async function () {
             const response = await fetch('/playlists');
             if (response.ok) {
                 const playlists = await response.json();
-                displayPlaylists(playlists);
+                displayPlaylists(playlists); 
             } else {
                 console.error('Failed to fetch playlists');
             }
@@ -61,7 +61,7 @@
 
         function displayPlaylists(data) {
             const container = document.getElementById('playlist-container');
-            container.innerHTML = ''; // Clear previous content
+            container.innerHTML = ''; // Clears above
             data.items.forEach(playlist => {
                 const div = document.createElement('div');
                 div.textContent = playlist.name;
