@@ -60,7 +60,7 @@ async function extractPopularArtists(tracks, access_token) {
     const authOptions = {
         headers: { 'Authorization': 'Bearer ' + access_token }
     };
-
+//loop over the tracks, it increments the artist by one based on the artists name
     for (const track of tracks) {
         const artists = track.track.artists;
         for (const artist of artists) {
@@ -92,7 +92,7 @@ async function extractPopularArtists(tracks, access_token) {
         .sort((a, b) => b.count - a.count);
 
     return {
-        artists: sortedArtists.slice(0, 3).map(artist => artist.name),
+        artists: sortedArtists.slice(0, 3).map(artist => artist.name), // the 3 most occuring artists and the genre
         mostPopularGenre
     };
 }
@@ -103,3 +103,4 @@ module.exports = router;
 //https://developer.spotify.com/documentation/web-api/reference/get-list-users-playlists
 //https://www.youtube.com/watch?v=D77ANP60DaU 
 //https://stackoverflow.com/questions/4020796/finding-the-max-value-of-a-property-in-an-array-of-objects/4020842#4020842
+//https://stackoverflow.com/questions/5667888/counting-the-occurrences-frequency-of-array-elements

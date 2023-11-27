@@ -48,7 +48,7 @@
                 document.getElementById('logged-in').style.display = 'none';
             }
         }
-// change this an async function so it displays after user is authenticated
+// *change this an async function so it displays after user is authenticated
         document.getElementById('fetch-playlists').addEventListener('click', async function () {
             const response = await fetch('/playlists');
             if (response.ok) {
