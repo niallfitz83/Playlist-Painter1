@@ -27,7 +27,7 @@ let stateKey = 'spotify_auth_state';
 let app = express();
 //handless the session
 app.use(session({  
-    secret: '1234', //signs the cookie, need to generate random string in future for security
+    secret: '1234', //signs the cookie, needs to generate a random string and stored securely at some stage
     resave: false,
     saveUninitialized: true
 }));
@@ -42,7 +42,7 @@ app.get('/login', function (req, res) {
     let state = generateRandomString(16);
     res.cookie(stateKey, state);
 
-    const scope = 'user-read-private user-read-email';
+    const scope = 'user-read-private user-read-email';  //*this needs to be corrected to what actual data that I will pull from the user 
     res.redirect('https://accounts.spotify.com/authorize?' +
         querystring.stringify({
             response_type: 'code',
@@ -59,7 +59,7 @@ app.get('/callback', function (req, res) {  //redirect back to app when user gra
     let storedState = req.cookies ? req.cookies[stateKey] : null;
 
     if (state === null || state !== storedState) {
-        res.redirect('/#' +
+        res.redirect('/#' + //*direct to an error page
             querystring.stringify({
                 error: 'state_mismatch'
             }));

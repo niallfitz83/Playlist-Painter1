@@ -60,14 +60,14 @@ async function extractPopularArtists(tracks, access_token) {
     const authOptions = {
         headers: { 'Authorization': 'Bearer ' + access_token }
     };
-//loop over the tracks, it increments the artist by one based on the artists name
+//loop over the tracks, it increments the artist by one with each appearance of the name
     for (const track of tracks) {
         const artists = track.track.artists;
         for (const artist of artists) {
             artistCounts[artist.name] = (artistCounts[artist.name] || 0) + 1;
 
             try {
-                const artistResponse = await fetch(`https://api.spotify.com/v1/artists/${artist.id}`, authOptions);
+                const artistResponse = await fetch(`https://api.spotify.com/v1/artists/${artist.id}`, authOptions); 
                 if (artistResponse.ok) {
                     const artistData = await artistResponse.json();
                     if (artistData.genres && artistData.genres.length > 0) {
@@ -92,7 +92,7 @@ async function extractPopularArtists(tracks, access_token) {
         .sort((a, b) => b.count - a.count);
 
     return {
-        artists: sortedArtists.slice(0, 3).map(artist => artist.name), // the 3 most occuring artists and the genre
+        artists: sortedArtists.slice(0, 3).map(artist => artist.name), // top 3 from list of artists 
         mostPopularGenre
     };
 }
