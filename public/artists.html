@@ -9,67 +9,78 @@
 </head>
 <body>
     <div class="content-container">
-    <h1>Most Popular Artists and Genre in your Playlist:</h1>
-    <div id="artists-container">
-    </div>
-    <div id="genre-container">
-     </div>
+        <h1>Most Popular Artists and Genre in your Playlist:</h1>
+        <div id="artists-container"></div>
+        <div id="genre-container"></div>
+        <button id="toDallePageBtn">Create Image in Dalle</button>
     </div>
 
     <script>
+        let artistsData = [];
+        let genreData = '';
+
         async function fetchAndDisplayArtists() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const playlistId = urlParams.get('playlistId');
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistId = urlParams.get('playlistId');
 
-    if (!playlistId) {
-        console.error('Playlist ID is missing');
-        return;
-    }
+            if (!playlistId) {
+                console.error('Playlist ID is missing');
+                return;
+            }
 
-    try {
-        const response = await fetch(`/artists?playlistId=${playlistId}`);
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data.artists && Array.isArray(data.artists)) {
-                displayArtists(data.artists);
-            } else {
-                console.error('Artists data is not in the expected format:', data);
+            try {
+                const response = await fetch(`/artists?playlistId=${playlistId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.artists && Array.isArray(data.artists)) {
+                        displayArtists(data.artists);
+                        artistsData = data.artists;
+                    } else {
+                        console.error('Artists data is not in the expected format:', data);
+                    }
+                    if (data && data.mostPopularGenre) {
+                        displayGenre(data.mostPopularGenre);
+                        genreData = data.mostPopularGenre;
+                    } else {
+                        console.error('Genre data is missing', data);
+                    }
+                } else {
+                    console.error('Failed to fetch artists and genre');
+                }
+            } catch (error) {
+                console.error('Error:', error);
             }
-            if (data && data.mostPopularGenre) {
-                displayGenre(data.mostPopularGenre);
-            } else {
-                console.error('Genre data is missing', data);
-            }
-        } else {
-            console.error('Failed to fetch artists and genre');
         }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
 
-function displayArtists(artists) {
-    const container = document.getElementById('artists-container');
-    container.innerHTML = '<h2>Artists</h2>'; 
-    const list = document.createElement('ul'); // Creates list to display artists
-    artists.forEach(artist => {
-        const listItem = document.createElement('li');
-        listItem.textContent = artist;
-        list.appendChild(listItem);
+        function displayArtists(artists) {
+            const container = document.getElementById('artists-container');
+            container.innerHTML = '<h2>Artists</h2>'; 
+            const list = document.createElement('ul');
+            artists.forEach(artist => {
+                const listItem = document.createElement('li');
+                listItem.textContent = artist;
+                list.appendChild(listItem);
+            });
+            container.appendChild(list);
+        }
+
+        function displayGenre(genre) {
+            const container = document.getElementById('genre-container');
+            container.innerHTML = '<h2>Genre</h2>'; 
+            const genreDiv = document.createElement('div');
+            genreDiv.textContent = 'Most Popular Genre: ' + genre;
+            container.appendChild(genreDiv);
+        }
+
+        document.getElementById('toDallePageBtn').addEventListener('click', function() {
+    const queryParams = new URLSearchParams({
+        artists: JSON.stringify(artistsData),
+        genre: genreData
     });
-    container.appendChild(list);
-}
+    window.location.href = `dalle.html?${queryParams.toString()}`;
+});
 
-function displayGenre(genre) {
-    const container = document.getElementById('genre-container');
-    container.innerHTML = '<h2>Genre</h2>'; 
-    const genreDiv = document.createElement('div');
-    genreDiv.textContent = 'Most Popular Genre: ' + genre;
-    container.appendChild(genreDiv);
-}
-
-fetchAndDisplayArtists();
-
+        fetchAndDisplayArtists();
     </script>
 </body>
 </html>
