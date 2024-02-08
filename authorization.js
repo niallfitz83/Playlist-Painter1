@@ -6,7 +6,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fetch = require('node-fetch');
 const path = require('path');
+
 const getPlaylistRouter = require('./getPlaylist.js'); 
+const dalleRouter = require('./dalle.js');
 
 const client_id = '1f41a373cee9493c94146c1db7553300';
 const client_secret = 'a97199ef1dfc4759b23586207fef729a'; 
@@ -37,6 +39,7 @@ app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
     
 app.use('/', getPlaylistRouter);
+app.use('/', dalleRouter);
 
 app.get('/login', function (req, res) {
     let state = generateRandomString(16);

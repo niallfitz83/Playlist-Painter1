@@ -72,15 +72,19 @@
             container.appendChild(genreDiv);
         }
 
-        document.getElementById('toDallePageBtn').addEventListener('click', function() {
-    const queryParams = new URLSearchParams({
-        artists: JSON.stringify(artistsData),
-        genre: genreData
-    });
-    window.location.href = `dalle.html?${queryParams.toString()}`;
+        document.getElementById('toDallePageBtn').addEventListener('click', () => {
+    // Correct variables used here
+    const params = new URLSearchParams({
+        artists: JSON.stringify(artistsData), // Correct variable name
+        genre: genreData // Correct variable name
+    }).toString();
+    window.location.href = `dalle.html?${params}`; // Redirects with data as query params
 });
 
-        fetchAndDisplayArtists();
+
+
+
+    fetchAndDisplayArtists();
     </script>
 </body>
 </html>

@@ -2,85 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artistic Image Generation</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
-        
-    </style>
+    <title>AI-Generated Image</title>
 </head>
 <body>
-    <div class="content-container">
-        <h1>Artistic Image Generation</h1>
-        <button id="generateImageBtn" class="login-button">Generate Image</button>
-        <div class="images-container" id="artists-container">
-          
-            <!-- The generated image will be displayed here -->
-          
-            <img id="generatedImage" src="" alt="Generated Image" />
-        </div>
-    </div>
+    <h1>Generated Image</h1>
+    <button id="generateImageBtn">Generate Image</button>
+    <img id="displayedImage" src="" alt="Generated Artistic Image" style="display:none; margin-top: 20px;">
+
     <script>
-    
-   // Add an event listener to the "Generate Image" button
-   document.getElementById('generateImageBtn').addEventListener('click', async () => {
-    try {
-        // Fetch artists and genre from the server session
-        const sessionDataResponse = await fetch('/session-data');
-        if (!sessionDataResponse.ok) {
-            throw new Error('Failed to fetch artists and genre');
-        }
-        const { artists, mostPopularGenre } = await sessionDataResponse.json();
-
-        // Check if artists data is in the expected format
-        if (artists && Array.isArray(artists)) {
-            displayArtists(artists);
-            artistsData = artists;
-        } else {
-            console.error('Artists data is not in the expected format:', artists);
+        // Function to parse query parameters from URL
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            const artists = params.get('artists') ? JSON.parse(decodeURIComponent(params.get('artists'))) : [];
+            const genre = params.get('genre');
+            return { artists, genre };
         }
 
-        // Check if mostPopularGenre data is available
-        if (mostPopularGenre) {
-            displayGenre(mostPopularGenre);
-            genreData = mostPopularGenre;
-        }
+        document.getElementById('generateImageBtn').addEventListener('click', async () => {
+            const { artists, genre } = getQueryParams();
 
-        // Construct the prompt
-        const prompt = `An artistic representation of ${artists.join(', ')} in the genre of ${mostPopularGenre}`;
+            // Ensure artists and genre are not empty
+            if (!artists.length || !genre) {
+                console.error('Missing artists or genre data');
+                return;
+            }
 
-        // Generate image using the prompt
-        const imageResponse = await fetch('/generate-image', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ artists, genre: mostPopularGenre }),
+            try {
+                const response = await fetch('/generate-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ artists, genre }),
+                });
+
+                if (response.ok) {
+                    const { url: imageUrl } = await response.json();
+                    const displayedImage = document.getElementById('displayedImage');
+                    displayedImage.src = imageUrl;
+                    displayedImage.style.display = 'block';
+                } else {
+                    console.error('Failed to fetch generated image:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error fetching generated image:', error);
+            }
         });
-
-        if (imageResponse.ok) {
-            const imageData = await imageResponse.json();
-            // Display the generated image
-            const generatedImage = document.getElementById('generatedImage');
-            generatedImage.src = imageData.data[0].url;
-        } else {
-            
-            console.error('Failed to generate image');
-        }
-
-        // Display the fetched artists and genre data
-        const artistsAndGenreElement = document.getElementById('artistsAndGenre');
-        artistsAndGenreElement.innerHTML = `Artists: ${artists.join(', ')}<br>Genre: ${mostPopularGenre}`;
-    } catch (error) {
-        console.error('Error:', error);
-    }
-});
-
-</script>
-
-
- 
+    </script>
 </body>
 </html>

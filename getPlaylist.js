@@ -97,22 +97,6 @@ async function extractPopularArtists(tracks, access_token) {
     };
 }
 
-router.get('/session-data', async (req, res) => {
-    try {
-        // Implement the logic to fetch artists and genre data here
-        // You can use your existing logic to fetch this data
-        const artistsData = await extractPopularArtists;
-        const mostPopularGenre = artistsData.mostPopularGenre;
-
-        // Send the data as a JSON response
-        res.json({ artists: artistsData.artists, mostPopularGenre });
-    } catch (error) {
-        console.error('Error fetching session data:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-
 module.exports = router;
 
 //https://www.youtube.com/watch?v=gNvgI5imIiU
