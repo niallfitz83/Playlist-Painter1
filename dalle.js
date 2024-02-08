@@ -1,3 +1,4 @@
+//https://platform.openai.com/docs/guides/images/usage
 const cors = require('cors');
 app.use(cors());
 const express = require('express');
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.static('public')); 
 
 // Endpoint to handle image generation
+//https://www.youtube.com/watch?v=l3TLQuwr4G0&t=1544s
 app.post('/generate-image', async (req, res) => {
     const prompt = req.body.prompt;
     const apiKey = process.env.OPENAI_API_KEY;
