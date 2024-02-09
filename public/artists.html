@@ -73,12 +73,12 @@
         }
 
         document.getElementById('toDallePageBtn').addEventListener('click', () => {
-    // Correct variables used here
+    
     const params = new URLSearchParams({
-        artists: JSON.stringify(artistsData), // Correct variable name
-        genre: genreData // Correct variable name
+        artists: JSON.stringify(artistsData), 
+        genre: genreData 
     }).toString();
-    window.location.href = `dalle.html?${params}`; // Redirects with data as query params
+    window.location.href = `dalle.html?${params}`;
 });
 
 

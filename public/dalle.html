@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>AI-Generated Image</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <h1>Generated Image</h1>
+    <div id="image-container">
+        <div id="loader" class="loader"></div> 
+        <img id="displayedImage" src="" alt="" style="display: none;"> 
+    </div>
     <button id="generateImageBtn">Generate Image</button>
-    <img id="displayedImage" src="" alt="Generated Artistic Image" style="display:none; margin-top: 20px;">
+    <button class="action-button" id="saveBtn">Save</button>
+    <button class="action-button" id="addPlaylistCoverBtn">Add as my playlist cover</button>
+
 
     <script>
-        // Function to parse query parameters from URL
+        //https://stackoverflow.com/questions/979975/get-the-values-from-the-get-parameters-javascript/979995#979995
+        // Function to parse query parameters from URL 
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             const artists = params.get('artists') ? JSON.parse(decodeURIComponent(params.get('artists'))) : [];
@@ -19,35 +26,43 @@
         }
 
         document.getElementById('generateImageBtn').addEventListener('click', async () => {
-            const { artists, genre } = getQueryParams();
+    const { artists, genre } = getQueryParams();
 
-            // Ensure artists and genre are not empty
-            if (!artists.length || !genre) {
-                console.error('Missing artists or genre data');
-                return;
-            }
+    if (!artists.length || !genre) {
+        console.error('Missing artists or genre data');
+        return;
+    }
 
-            try {
-                const response = await fetch('/generate-image', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ artists, genre }),
-                });
+    // Show the loader
+    const loader = document.getElementById('loader');
+    loader.style.display = 'block';
+    const displayedImage = document.getElementById('displayedImage');
+    displayedImage.style.display = 'none';
 
-                if (response.ok) {
-                    const { url: imageUrl } = await response.json();
-                    const displayedImage = document.getElementById('displayedImage');
-                    displayedImage.src = imageUrl;
-                    displayedImage.style.display = 'block';
-                } else {
-                    console.error('Failed to fetch generated image:', await response.text());
-                }
-            } catch (error) {
-                console.error('Error fetching generated image:', error);
-            }
+    try {
+        const response = await fetch('/generate-image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ artists, genre }),
         });
+
+        if (response.ok) {
+            const { url: imageUrl } = await response.json();
+            // Hide the loader and show the image
+            loader.style.display = 'none';
+            displayedImage.src = imageUrl;
+            displayedImage.style.display = 'block';
+        } else {
+            console.error('Failed to fetch generated image:', await response.text());
+            loader.style.display = 'none'; // Hide loader if there's an error
+        }
+    } catch (error) {
+        console.error('Error fetching generated image:', error);
+        loader.style.display = 'none'; // Hide loader on catch
+    }
+});
     </script>
 </body>
 </html>
