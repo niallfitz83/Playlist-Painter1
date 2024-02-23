@@ -49,9 +49,9 @@ app.post('/upload-playlist-cover', async (req, res) => {
 });
 
 // Spotify API credentials
-const client_id = '1f41a373cee9493c94146c1db7553300'; // Replace with your client ID
-const client_secret = 'a97199ef1dfc4759b23586207fef729a'; // Replace with your client secret
-const redirect_uri = 'http://localhost:8081/callback'; // Make sure this matches your Spotify app settings
+const client_id = '1f41a373cee9493c94146c1db7553300'; 
+const client_secret = 'a97199ef1dfc4759b23586207fef729a'; 
+const redirect_uri = 'http://localhost:8081/callback'; 
 
 // Function to generate a random string for the state parameter in authentication requests
 const generateRandomString = length => {
@@ -70,7 +70,7 @@ app.get('/login', function(req, res) {
     const state = generateRandomString(16);
     res.cookie(stateKey, state);
 
-    // Request authorization
+    // Request authorization for palylist cover change
     const scopes = ['ugc-image-upload', 'playlist-modify-public', 'playlist-modify-private'];
     const authUrl = `https://accounts.spotify.com/authorize?${querystring.stringify({
         response_type: 'code',
