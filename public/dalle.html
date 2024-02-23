@@ -2,67 +2,140 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI-Generated Image</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>Playlist Picture</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="image-container">
-        <div id="loader" class="loader"></div> 
-        <img id="displayedImage" src="" alt="" style="display: none;"> 
+        <div id="loader" class="loader"></div>
+        <img id="displayedImage" src="" alt="" style="display: none;">
     </div>
     <button id="generateImageBtn">Generate Image</button>
     <button class="action-button" id="saveBtn">Save</button>
+    <a id="downloadLink" style="display: none;" download="playlist_cover.jpg">Download</a>
     <button class="action-button" id="addPlaylistCoverBtn">Add as my playlist cover</button>
 
-
     <script>
-        //https://stackoverflow.com/questions/979975/get-the-values-from-the-get-parameters-javascript/979995#979995
-        // Function to parse query parameters from URL 
+        // Helper functions
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
-            const artists = params.get('artists') ? JSON.parse(decodeURIComponent(params.get('artists'))) : [];
-            const genre = params.get('genre');
-            return { artists, genre };
+            return {
+                artists: params.get('artists') ? JSON.parse(decodeURIComponent(params.get('artists'))) : [],
+                genre: params.get('genre'),
+                playlistId: params.get('playlistId'),
+            };
         }
 
-        document.getElementById('generateImageBtn').addEventListener('click', async () => {
-    const { artists, genre } = getQueryParams();
+        function displayLoadingState(isLoading) {
+            document.getElementById('loader').style.display = isLoading ? 'block' : 'none';
+            document.getElementById('displayedImage').style.display = isLoading ? 'none' : 'block';
+        }
 
-    if (!artists.length || !genre) {
-        console.error('Missing artists or genre data');
+        function displayImage(imageUrl) {
+           const displayedImage = document.getElementById('displayedImage');
+           const downloadLink = document.getElementById('downloadLink');
+
+        displayedImage.src = imageUrl;
+        downloadLink.href = imageUrl; // Make sure imageUrl is directly accessible
+
+        displayLoadingState(false);
+        }
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+           const downloadLink = document.getElementById('downloadLink');
+           downloadLink.click(); // Triggers the download
+        });
+        
+        document.getElementById('generateImageBtn').addEventListener('click', async () => {
+            const { artists, genre } = getQueryParams();
+
+            if (!artists.length || !genre) {
+                alert('Missing artists or genre data');
+                return;
+            }
+
+            displayLoadingState(true);
+
+            try {
+                const response = await fetch('/generate-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ artists, genre }),
+                });
+
+                if (response.ok) {
+                    const { url: imageUrl } = await response.json();
+                    displayImage(imageUrl);
+                } else {
+                    throw new Error('Failed to fetch generated image');
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+                displayLoadingState(false);
+            }
+        });
+
+        document.getElementById('addPlaylistCoverBtn').addEventListener('click', async () => {
+    const { playlistId } = getQueryParams();
+    const imageUrl = document.getElementById('displayedImage').src;
+
+    if (!playlistId) {
+        alert('Playlist ID is missing');
         return;
     }
 
-    // Show the loader
-    const loader = document.getElementById('loader');
-    loader.style.display = 'block';
-    const displayedImage = document.getElementById('displayedImage');
-    displayedImage.style.display = 'none';
-
     try {
-        const response = await fetch('/generate-image', {
+        const response = await fetch('/upload-playlist-cover', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ artists, genre }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageUrl, playlistId }),
         });
 
-        if (response.ok) {
-            const { url: imageUrl } = await response.json();
-            // Hide the loader and show the image
-            loader.style.display = 'none';
-            displayedImage.src = imageUrl;
-            displayedImage.style.display = 'block';
+        const data = await response.json();
+        if (data.success) {
+            alert('Playlist cover updated successfully!');
+            // Redirect the user back to the playlist
+
+            window.location.href = `https://open.spotify.com/playlist/${playlistId}`;
+
         } else {
-            console.error('Failed to fetch generated image:', await response.text());
-            loader.style.display = 'none'; // Hide loader if there's an error
+            alert(`Failed to update playlist cover: ${data.message}`);
         }
     } catch (error) {
-        console.error('Error fetching generated image:', error);
-        loader.style.display = 'none'; // Hide loader on catch
+        alert(`Error: ${error.message}`);
     }
 });
+
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+    const imageUrl = document.getElementById('displayedImage').src;
+    console.log('Attempting to download image from URL:', imageUrl); // Debug: Log the image URL
+
+    fetch(imageUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            console.log('Blob URL created:', blobUrl); 
+
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = blobUrl;
+            downloadLink.download = 'playlist_cover.jpg';
+            downloadLink.click();
+
+            setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100); 
+        })
+        .catch(error => {
+            console.error('Error downloading the image:', error);
+            alert(`Error downloading the image: ${error.message}`);
+        });
+});
+
+
     </script>
 </body>
 </html>

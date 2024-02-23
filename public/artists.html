@@ -18,10 +18,11 @@
     <script>
         let artistsData = [];
         let genreData = '';
+        let playlistId = ''; 
 
         async function fetchAndDisplayArtists() {
             const urlParams = new URLSearchParams(window.location.search);
-            const playlistId = urlParams.get('playlistId');
+            playlistId = urlParams.get('playlistId'); // Assign playlistId from URL
 
             if (!playlistId) {
                 console.error('Playlist ID is missing');
@@ -54,7 +55,7 @@
 
         function displayArtists(artists) {
             const container = document.getElementById('artists-container');
-            container.innerHTML = '<h2>Artists</h2>'; 
+            container.innerHTML = '<h2>Artists</h2>';
             const list = document.createElement('ul');
             artists.forEach(artist => {
                 const listItem = document.createElement('li');
@@ -66,25 +67,23 @@
 
         function displayGenre(genre) {
             const container = document.getElementById('genre-container');
-            container.innerHTML = '<h2>Genre</h2>'; 
+            container.innerHTML = '<h2>Genre</h2>';
             const genreDiv = document.createElement('div');
             genreDiv.textContent = 'Most Popular Genre: ' + genre;
             container.appendChild(genreDiv);
         }
 
         document.getElementById('toDallePageBtn').addEventListener('click', () => {
-    
-    const params = new URLSearchParams({
-        artists: JSON.stringify(artistsData), 
-        genre: genreData 
-    }).toString();
-    window.location.href = `dalle.html?${params}`;
-});
+            // Make sure playlistId is defined when constructing URL parameters
+            const params = new URLSearchParams({
+                artists: JSON.stringify(artistsData),
+                genre: genreData,
+                playlistId: playlistId  // Correctly use playlistId here
+            }).toString();
+            window.location.href = `dalle.html?${params}`;
+        });
 
-
-
-
-    fetchAndDisplayArtists();
+        fetchAndDisplayArtists();
     </script>
 </body>
 </html>
