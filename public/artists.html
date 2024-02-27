@@ -12,7 +12,7 @@
         <h1>Most Popular Artists and Genre in your Playlist:</h1>
         <div id="artists-container"></div>
         <div id="genre-container"></div>
-        <button id="toDallePageBtn">Create Image in Dalle</button>
+        <button id="toDallePageBtn" style="display: none;">Create Image for your playlist</button>
     </div>
 
     <script>
@@ -21,41 +21,52 @@
         let playlistId = ''; 
 
         async function fetchAndDisplayArtists() {
-            const urlParams = new URLSearchParams(window.location.search);
-            playlistId = urlParams.get('playlistId'); // Assign playlistId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    playlistId = urlParams.get('playlistId'); // Assign playlistId from URL
 
-            if (!playlistId) {
-                console.error('Playlist ID is missing');
-                return;
+    if (!playlistId) {
+        console.error('Playlist ID is missing');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/artists?playlistId=${playlistId}`);
+        if (response.ok) {
+            const data = await response.json();
+            let dataFetchedAndDisplayed = false; // Track if data is successfully fetched and displayed
+
+            if (data && data.artists && Array.isArray(data.artists)) {
+                displayArtists(data.artists);
+                artistsData = data.artists;
+                dataFetchedAndDisplayed = true; // Update flag
+            } else {
+                console.error('Artists data is not in the expected format:', data);
+            }
+            if (data && data.mostPopularGenre) {
+                displayGenre(data.mostPopularGenre);
+                genreData = data.mostPopularGenre;
+                dataFetchedAndDisplayed = true; // Update flag
+            } else {
+                console.error('Genre data is missing', data);
             }
 
-            try {
-                const response = await fetch(`/artists?playlistId=${playlistId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.artists && Array.isArray(data.artists)) {
-                        displayArtists(data.artists);
-                        artistsData = data.artists;
-                    } else {
-                        console.error('Artists data is not in the expected format:', data);
-                    }
-                    if (data && data.mostPopularGenre) {
-                        displayGenre(data.mostPopularGenre);
-                        genreData = data.mostPopularGenre;
-                    } else {
-                        console.error('Genre data is missing', data);
-                    }
-                } else {
-                    console.error('Failed to fetch artists and genre');
-                }
-            } catch (error) {
-                console.error('Error:', error);
+            // Show the button if data is fetched and displayed
+            if (dataFetchedAndDisplayed) {
+                document.getElementById('toDallePageBtn').style.display = 'block'; // Or 'inline-block'
             }
+
+        } else {
+            console.error('Failed to fetch artists and genre');
         }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 
         function displayArtists(artists) {
             const container = document.getElementById('artists-container');
-            container.innerHTML = '<h2>Artists</h2>';
+            container.innerHTML = '<h2>Artists:</h2>';
             const list = document.createElement('ul');
             artists.forEach(artist => {
                 const listItem = document.createElement('li');
@@ -67,9 +78,9 @@
 
         function displayGenre(genre) {
             const container = document.getElementById('genre-container');
-            container.innerHTML = '<h2>Genre</h2>';
+            container.innerHTML = '<h2>Genre:</h2>';
             const genreDiv = document.createElement('div');
-            genreDiv.textContent = 'Most Popular Genre: ' + genre;
+            genreDiv.textContent = genre;
             container.appendChild(genreDiv);
         }
 
