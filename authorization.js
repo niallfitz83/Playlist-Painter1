@@ -48,6 +48,23 @@ app.post('/upload-playlist-cover', async (req, res) => {
     }
 });
 
+app.get('/proxy-image', async (req, res) => {
+    const imageUrl = req.query.url;
+    try {
+        const response = await fetch(imageUrl);
+        if (response.ok) {
+            const imageBuffer = await response.buffer();
+            res.set('Content-Type', 'image/png');
+            res.send(imageBuffer);
+        } else {
+            res.status(response.status).send('Image not found');
+        }
+    } catch (error) {
+        console.error('Error fetching image:', error);
+        res.status(500).send('Error fetching image');
+    }
+});
+
 // Spotify API credentials
 const client_id = '1f41a373cee9493c94146c1db7553300'; 
 const client_secret = 'a97199ef1dfc4759b23586207fef729a'; 
@@ -70,14 +87,15 @@ app.get('/login', function(req, res) {
     const state = generateRandomString(16);
     res.cookie(stateKey, state);
 
-    // Request authorization for palylist cover change
+    // Request authorization for playlist cover change and playlist access
     const scopes = ['ugc-image-upload', 'playlist-modify-public', 'playlist-modify-private'];
     const authUrl = `https://accounts.spotify.com/authorize?${querystring.stringify({
         response_type: 'code',
         client_id: client_id,
         scope: scopes.join(' '),
         redirect_uri: redirect_uri,
-        state: state
+        state: state,
+        show_dialog: true
     })}`;
 
     res.redirect(authUrl);

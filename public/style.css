@@ -12,15 +12,30 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
   text-align: center;
 }
 
 /* Login Container Styling */
+
+.image-container {
+  text-align: center;
+  margin-bottom: 1px; 
+  padding: 1px; 
+  background-color: #1DB954;
+}
+
+.image-container img {
+  max-width: 98%; 
+  height: auto;
+  padding: 1;
+
+}
+  
 .login-container {
   background: #282828; 
-  padding: 40px;
-  border-radius: 10px;
+  padding: 10px;
+  border-radius: 5px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
   color: #FFF;
 }
@@ -68,20 +83,12 @@ a:hover {
 }
 
 
-.content-container {
-  text-align: center;
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background-color: #282828; 
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  color: #FFF;
-}
-
-
-#artists-container, #genre-container {
-  background: #282828; 
+#artists-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  min-height: 200px; /* Example height - adjust as needed */
+  background: #282828; /* Assuming you want to keep the dark theme */
   padding: 20px;
   margin-top: 20px;
   border-radius: 5px;
@@ -89,23 +96,34 @@ a:hover {
   color: #FFF;
 }
 
+#genre-container {
+  background: #282828;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  color: #FFF;
+}
 
 #artists-container ul, #genre-container div {
   list-style: none;
   padding: 0;
+  margin: 0; 
+  width: 100%; 
 }
-
 
 #artists-container li {
   margin-bottom: 10px;
-  font-size: 1.1em; 
+  font-size: 1.1em;
+  text-align: center; 
 }
-
 
 #genre-container div {
   font-size: 1.2em;
-  font-weight: bold; 
+  font-weight: bold;
+  text-align: center; 
 }
+
 
 /* Playlist Container Styling */
 #playlist-container {
@@ -156,10 +174,23 @@ a:hover {
 
 /* chatgbt assisted in keeping the styling consistent*/
 
+#art-styles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center buttons */
+  gap: 10px; /* Space between buttons */
+}
+
+#main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #image-container {
   margin: 20px;
-  width: 1024px; 
-  height: 1024px; 
+  width: 450px; 
+  height: 450px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -169,8 +200,8 @@ a:hover {
 }
 
 #displayedImage {
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 90%;
+  max-height: 90%;
   border-radius: 10px; 
 }
 
@@ -204,22 +235,110 @@ a:hover {
   transform: translateY(-2px); 
 }
 
+.art-style-button {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.5em 0.5em 0;
+  border: 0.16em solid rgba(255,255,255,0);
+  border-radius: 2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color: #FFFFFF;
+  text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  width: 125px; 
+  height: 30px; 
+
+}
+
+.art-style-button:hover {
+  border-color: rgba(255,255,255,1);
+}
+
+@media all and (max-width: 30em) {
+  .art-style-button {
+    display: block;
+    margin: 0.2em auto;
+  }
+}
 
 
-/*https://reactjsexample.com/a-simple-loader-built-with-react-and-framer-motion/*/
+.selected {
+  box-shadow: 0 0 40px #1ED760; /* Example of a highlight effect */
+}
+
+
+
+
+/*https://css-loaders.com/classic//*/
 .loader {
-  display: none;
-  border: 5px solid #f3f3f3; 
-  border-top: 5px solid #3498db; 
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 2s linear infinite;
+  --w:10ch;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  letter-spacing: var(--w);
+  width:var(--w);
+  overflow: hidden;
+  white-space: nowrap;
+  text-shadow: 
+    calc(-1*var(--w)) 0, 
+    calc(-2*var(--w)) 0, 
+    calc(-3*var(--w)) 0, 
+    calc(-4*var(--w)) 0,
+    calc(-5*var(--w)) 0, 
+    calc(-6*var(--w)) 0, 
+    calc(-7*var(--w)) 0, 
+    calc(-8*var(--w)) 0, 
+    calc(-9*var(--w)) 0;
+  animation: l16 2s infinite;
 }
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.loader:before {
+  content:"Loading...";
 }
-
+@keyframes l16 {
+  20% {text-shadow: 
+    calc(-1*var(--w)) 0, 
+    calc(-2*var(--w)) 0 red, 
+    calc(-3*var(--w)) 0, 
+    calc(-4*var(--w)) 0 #ffa516,
+    calc(-5*var(--w)) 0 #63fff4, 
+    calc(-6*var(--w)) 0, 
+    calc(-7*var(--w)) 0, 
+    calc(-8*var(--w)) 0 green, 
+    calc(-9*var(--w)) 0;}
+  40% {text-shadow: 
+    calc(-1*var(--w)) 0, 
+    calc(-2*var(--w)) 0 red, 
+    calc(-3*var(--w)) 0 #e945e9, 
+    calc(-4*var(--w)) 0,
+    calc(-5*var(--w)) 0 green, 
+    calc(-6*var(--w)) 0 orange, 
+    calc(-7*var(--w)) 0, 
+    calc(-8*var(--w)) 0 green, 
+    calc(-9*var(--w)) 0;}
+  60% {text-shadow: 
+    calc(-1*var(--w)) 0 lightblue, 
+    calc(-2*var(--w)) 0, 
+    calc(-3*var(--w)) 0 #e945e9, 
+    calc(-4*var(--w)) 0,
+    calc(-5*var(--w)) 0 green, 
+    calc(-6*var(--w)) 0, 
+    calc(-7*var(--w)) 0 yellow, 
+    calc(-8*var(--w)) 0 #ffa516, 
+    calc(-9*var(--w)) 0 red;}
+  80% {text-shadow: 
+    calc(-1*var(--w)) 0 lightblue, 
+    calc(-2*var(--w)) 0 yellow, 
+    calc(-3*var(--w)) 0 #63fff4, 
+    calc(-4*var(--w)) 0 #ffa516,
+    calc(-5*var(--w)) 0 red, 
+    calc(-6*var(--w)) 0, 
+    calc(-7*var(--w)) 0 grey, 
+    calc(-8*var(--w)) 0 #63fff4, 
+    calc(-9*var(--w)) 0 ;}
+}
 /*https://codepen.io/omerko96/pen/wvXgQZK https://chat.openai.com/ */

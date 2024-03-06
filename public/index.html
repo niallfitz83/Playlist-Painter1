@@ -8,11 +8,17 @@
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <div id="login" class="login-container">
-        <h1>Playlist Painter</h1>
-        <h3><em>Giving your playlists their true identity</em></h3>
-        <a class="login-button" role="button" href="/login">Log in with Spotify</a>
-    </div>
+    <div class="content-container"> 
+        <div id="image-container" class="image-container">
+            <img src="playlist_painter_dark_background.png" alt="Playlist Painter">
+        </div>
+
+        <div id="login" class="login-container">
+            <h1 style="color: #1DB954;">Playlist Painter</h1>
+            <h3><em>Giving your playlists their true identity</em></h3>
+            <a class="login-button" role="button" href="/login">Log in with Spotify</a>
+        </div>
+    </div> 
 
     <div id="logged-in" style="display: none;">
         <h1 style="color: #1DB954;">Logged in with Spotify!</h1>
@@ -21,7 +27,7 @@
     </div>
 
     <script src="authorization.js"></script>
-    <script>//code for the authorization video
+    <script>//code from the refrenced authorization video
         function getHashParams() {
     let hashParams = {};
     let e, r = /([^&;=]+)=?([^&;]*)/g, 

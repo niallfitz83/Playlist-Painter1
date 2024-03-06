@@ -10,59 +10,73 @@
 <body>
     <div class="content-container">
         <h1>Most Popular Artists and Genre in your Playlist:</h1>
-        <div id="artists-container"></div>
+        <div id="artists-container">
+            <div class="loader" style="display: none;"></div>
+        </div>
         <div id="genre-container"></div>
         <button id="toDallePageBtn" style="display: none;">Create Image for your playlist</button>
     </div>
 
+    <!-- Loader div -->
+    <div class="loader" style="display: none;"></div>
+
     <script>
-        let artistsData = [];
-        let genreData = '';
-        let playlistId = ''; 
+    let artistsData = [];
+    let genreData = '';
+    let playlistId = ''; 
 
-        async function fetchAndDisplayArtists() {
-    const urlParams = new URLSearchParams(window.location.search);
-    playlistId = urlParams.get('playlistId'); // Assign playlistId from URL
+    async function fetchAndDisplayArtists() {
+        const urlParams = new URLSearchParams(window.location.search);
+        playlistId = urlParams.get('playlistId'); 
+        const artistsContainer = document.getElementById('artists-container');
+        const loader = artistsContainer.querySelector('.loader'); 
 
-    if (!playlistId) {
-        console.error('Playlist ID is missing');
-        return;
-    }
-
-    try {
-        const response = await fetch(`/artists?playlistId=${playlistId}`);
-        if (response.ok) {
-            const data = await response.json();
-            let dataFetchedAndDisplayed = false; // Track if data is successfully fetched and displayed
-
-            if (data && data.artists && Array.isArray(data.artists)) {
-                displayArtists(data.artists);
-                artistsData = data.artists;
-                dataFetchedAndDisplayed = true; // Update flag
-            } else {
-                console.error('Artists data is not in the expected format:', data);
-            }
-            if (data && data.mostPopularGenre) {
-                displayGenre(data.mostPopularGenre);
-                genreData = data.mostPopularGenre;
-                dataFetchedAndDisplayed = true; // Update flag
-            } else {
-                console.error('Genre data is missing', data);
-            }
-
-            // Show the button if data is fetched and displayed
-            if (dataFetchedAndDisplayed) {
-                document.getElementById('toDallePageBtn').style.display = 'block'; // Or 'inline-block'
-            }
-
-        } else {
-            console.error('Failed to fetch artists and genre');
+        if (!playlistId) {
+            console.error('Playlist ID is missing');
+            return;
         }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
 
+        // Show the loader
+        loader.style.display = 'block';
+        artistsContainer.innerHTML = ''; 
+        artistsContainer.appendChild(loader);
+
+        try {
+            const response = await fetch(`/artists?playlistId=${playlistId}`);
+            if (response.ok) {
+                const data = await response.json();
+                let dataFetchedAndDisplayed = false; // Track if data is successfully fetched and displayed
+
+                if (data && data.artists && Array.isArray(data.artists)) {
+                    displayArtists(data.artists);
+                    artistsData = data.artists;
+                    dataFetchedAndDisplayed = true; // Update flag
+                } else {
+                    console.error('Artists data is not in the expected format:', data);
+                }
+                if (data && data.mostPopularGenre) {
+                    displayGenre(data.mostPopularGenre);
+                    genreData = data.mostPopularGenre;
+                    dataFetchedAndDisplayed = true; // Update flag
+                } else {
+                    console.error('Genre data is missing', data);
+                }
+
+                // Show the button if data is fetched and displayed
+                if (dataFetchedAndDisplayed) {
+                    document.getElementById('toDallePageBtn').style.display = 'block'; // Or 'inline-block'
+                }
+
+            } else {
+                console.error('Failed to fetch artists and genre');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            // Hide the loader
+            loader.style.display = 'none';
+        }
+    }
 
         function displayArtists(artists) {
             const container = document.getElementById('artists-container');
@@ -80,7 +94,8 @@
             const container = document.getElementById('genre-container');
             container.innerHTML = '<h2>Genre:</h2>';
             const genreDiv = document.createElement('div');
-            genreDiv.textContent = genre;
+            const formattedGenre = genre.charAt(0).toUpperCase() + genre.slice(1);
+            genreDiv.textContent = formattedGenre;
             container.appendChild(genreDiv);
         }
 

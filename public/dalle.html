@@ -6,14 +6,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="art-styles-container" style="display: flex; flex-direction: column;">
+        <button class="art-style-button" data-style="Abstract" style="background-color:#f14e4e">Abstract</button>
+        <button class="art-style-button" data-style="Surrealism" style="background-color:#f1bb4e">Surrealism</button>
+        <button class="art-style-button" data-style="Ukiyo-e" style="background-color:#84f14e">Ukiyo-e</button>
+        <button class="art-style-button" data-style="Impressionism" style="background-color:#4e9af1">Impressionism</button>
+        <button class="art-style-button" data-style="Futurism" style="background-color:#9a4ef1">Futurism</button>
+    </div>
+
+<div id="main-container">
+ <div id="image-and-actions-container">
     <div id="image-container">
-        <div id="loader" class="loader"></div>
+        <div id="loader" class="loader" style="display: none;"></div>
         <img id="displayedImage" src="" alt="" style="display: none;">
     </div>
-    <button id="generateImageBtn">Generate Image</button>
-    <button class="action-button" id="saveBtn">Save</button>
-    <a id="downloadLink" style="display: none;" download="playlist_cover.jpg">Download</a>
-    <button class="action-button" id="addPlaylistCoverBtn">Add as my playlist cover</button>
+    <div id="action-buttons-container">
+        <button id="generateImageBtn">Generate Image</button>
+        <button class="action-button" id="saveBtn">Save</button>
+        <a id="downloadLink" style="display: none;" download="playlist_cover.jpg">Download</a>
+        <button class="action-button" id="addPlaylistCoverBtn">Add as my playlist cover</button>
+    </div>
+</div>
 
     <script>
         // Helper functions
@@ -27,8 +40,9 @@
         }
 
         function displayLoadingState(isLoading) {
-            document.getElementById('loader').style.display = isLoading ? 'block' : 'none';
-            document.getElementById('displayedImage').style.display = isLoading ? 'none' : 'block';
+            const loader = document.getElementById('loader');
+            loader.style.display = isLoading ? 'block' : 'none';
+            document.getElementById('displayedImage').style.display = isLoading ? 'none' : 'block'; 
         }
 
         function displayImage(imageUrl) {
@@ -41,28 +55,47 @@
         displayLoadingState(false);
         }
 
-        document.getElementById('saveBtn').addEventListener('click', () => {
-           const downloadLink = document.getElementById('downloadLink');
-           downloadLink.click(); // Triggers the download
+        let selectedStyle = ''; 
+
+// Initially disable action buttons
+document.getElementById('generateImageBtn').disabled = true;
+document.getElementById('saveBtn').disabled = true;
+document.getElementById('addPlaylistCoverBtn').disabled = true;
+
+// Function to enable action buttons
+function enableActionButtons() {
+    document.getElementById('generateImageBtn').disabled = false;
+    document.getElementById('saveBtn').disabled = false;
+    document.getElementById('addPlaylistCoverBtn').disabled = false;
+}
+
+document.querySelectorAll('.art-style-button').forEach(button => {
+    button.addEventListener('click', function() {
+        selectedStyle = this.dataset.style; // Store the selected art style
+        enableActionButtons(); // Enable the action buttons
+        // Optional: highlight the selected button
+        document.querySelectorAll('.art-style-button').forEach(btn => btn.classList.remove('selected'));
+        this.classList.add('selected');
+    });
+});
+
+// Generate Image button event listener
+document.getElementById('generateImageBtn').addEventListener('click', async () => {
+    const { artists, genre } = getQueryParams();
+
+    if (!artists.length || !genre) {
+        alert('Missing artists or genre data');
+        return;
+    }
+
+    displayLoadingState(true);
+
+    try {
+        const response = await fetch('/generate-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ artists, genre, style: selectedStyle }), 
         });
-        
-        document.getElementById('generateImageBtn').addEventListener('click', async () => {
-            const { artists, genre } = getQueryParams();
-
-            if (!artists.length || !genre) {
-                alert('Missing artists or genre data');
-                return;
-            }
-
-            displayLoadingState(true);
-
-            try {
-                const response = await fetch('/generate-image', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ artists, genre }),
-                });
-
                 if (response.ok) {
                     const { url: imageUrl } = await response.json();
                     displayImage(imageUrl);
@@ -93,47 +126,44 @@
 
         const data = await response.json();
         if (data.success) {
-            alert('Playlist cover updated successfully!');
-            // Redirect the user back to the playlist
-
+        } 
+        setTimeout(() => {
             window.location.href = `https://open.spotify.com/playlist/${playlistId}`;
-
-        } else {
-            alert(`Failed to update playlist cover: ${data.message}`);
-        }
+        }, 700); 
     } catch (error) {
-        alert(`Error: ${error.message}`);
     }
 });
 
-
-        document.getElementById('saveBtn').addEventListener('click', () => {
+document.getElementById('saveBtn').addEventListener('click', () => {
     const imageUrl = document.getElementById('displayedImage').src;
-    console.log('Attempting to download image from URL:', imageUrl); 
+    const proxyUrl = `http://localhost:8081/proxy-image?url=${encodeURIComponent(imageUrl)}`;
 
-    fetch(imageUrl)
+    fetch(proxyUrl)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.statusText}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.blob();
         })
         .then(blob => {
             const blobUrl = window.URL.createObjectURL(blob);
-            console.log('Blob URL created:', blobUrl); 
-
-            const downloadLink = document.getElementById('downloadLink');
+            const downloadLink = document.createElement('a');
+            downloadLink.style.display = 'none';
             downloadLink.href = blobUrl;
-            downloadLink.download = 'playlist_cover.jpg';
+            downloadLink.download = 'downloaded_image.png'; // or another appropriate filename
+            document.body.appendChild(downloadLink);
             downloadLink.click();
-
-            setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100); 
+            window.URL.revokeObjectURL(blobUrl);
+            document.body.removeChild(downloadLink);
         })
         .catch(error => {
             console.error('Error downloading the image:', error);
             alert(`Error downloading the image: ${error.message}`);
         });
 });
+
+
+
 
 
     </script>
