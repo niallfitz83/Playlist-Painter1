@@ -7,12 +7,10 @@ const cookieParser = require('cookie-parser');
 const fetch = require('node-fetch');
 const path = require('path');
 
-// Import routers and utility functions
 const getPlaylistRouter = require('./getPlaylist.js'); 
 const dalleRouter = require('./dalle.js');
 const uploadImageToSpotifyPlaylist = require('./spotifyCover');
 
-// Initialize the Express application
 const app = express();
 
 // Session and Middleware setup
@@ -140,9 +138,6 @@ app.get('/callback', function(req, res) {
 
 console.log('Listening on 8081');
 app.listen(8081);
-
-
-// node authorization.js
 
 //https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
 //https://www.youtube.com/watch?v=NPW4K3aMjI8

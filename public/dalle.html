@@ -7,11 +7,11 @@
 </head>
 <body>
     <div id="art-styles-container" style="display: flex; flex-direction: column;">
-        <button class="art-style-button" data-style="Abstract" style="background-color:#f14e4e">Abstract</button>
-        <button class="art-style-button" data-style="Surrealism" style="background-color:#f1bb4e">Surrealism</button>
-        <button class="art-style-button" data-style="Ukiyo-e" style="background-color:#84f14e">Ukiyo-e</button>
-        <button class="art-style-button" data-style="Impressionism" style="background-color:#4e9af1">Impressionism</button>
-        <button class="art-style-button" data-style="Futurism" style="background-color:#9a4ef1">Futurism</button>
+        <button class="art-style-button" artStyle="Abstract" style="background-color:#f14e4e">Abstract</button>
+        <button class="art-style-button" artStyle="Surrealism" style="background-color:#f1bb4e">Surrealism</button>
+        <button class="art-style-button" artStyle="Ukiyo-e" style="background-color:#84f14e">Ukiyo-e</button>
+        <button class="art-style-button" artStyle="Impressionism" style="background-color:#4e9af1">Impressionism</button>
+        <button class="art-style-button" artStyle="Futurism" style="background-color:#9a4ef1">Futurism</button>
     </div>
 
 <div id="main-container">
@@ -57,12 +57,11 @@
 
         let selectedStyle = ''; 
 
-// Initially disable action buttons
 document.getElementById('generateImageBtn').disabled = true;
 document.getElementById('saveBtn').disabled = true;
 document.getElementById('addPlaylistCoverBtn').disabled = true;
 
-// Function to enable action buttons
+
 function enableActionButtons() {
     document.getElementById('generateImageBtn').disabled = false;
     document.getElementById('saveBtn').disabled = false;
@@ -71,9 +70,9 @@ function enableActionButtons() {
 
 document.querySelectorAll('.art-style-button').forEach(button => {
     button.addEventListener('click', function() {
-        selectedStyle = this.dataset.style; // Store the selected art style
-        enableActionButtons(); // Enable the action buttons
-        // Optional: highlight the selected button
+        selectedStyle = this.dataset.style; 
+        enableActionButtons(); 
+       
         document.querySelectorAll('.art-style-button').forEach(btn => btn.classList.remove('selected'));
         this.classList.add('selected');
     });
@@ -94,7 +93,7 @@ document.getElementById('generateImageBtn').addEventListener('click', async () =
         const response = await fetch('/generate-image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ artists, genre, style: selectedStyle }), 
+            body: JSON.stringify({ artists, genre, selectedStyle }), 
         });
                 if (response.ok) {
                     const { url: imageUrl } = await response.json();
@@ -129,11 +128,11 @@ document.getElementById('generateImageBtn').addEventListener('click', async () =
         } 
         setTimeout(() => {
             window.location.href = `https://open.spotify.com/playlist/${playlistId}`;
-        }, 700); 
+        }, 400); 
     } catch (error) {
     }
 });
-
+//https://stackoverflow.com/questions/70506057/download-a-blob-in-png-format
 document.getElementById('saveBtn').addEventListener('click', () => {
     const imageUrl = document.getElementById('displayedImage').src;
     const proxyUrl = `http://localhost:8081/proxy-image?url=${encodeURIComponent(imageUrl)}`;
@@ -150,7 +149,7 @@ document.getElementById('saveBtn').addEventListener('click', () => {
             const downloadLink = document.createElement('a');
             downloadLink.style.display = 'none';
             downloadLink.href = blobUrl;
-            downloadLink.download = 'downloaded_image.png'; // or another appropriate filename
+            downloadLink.download = 'playlist_painter_image.png'; 
             document.body.appendChild(downloadLink);
             downloadLink.click();
             window.URL.revokeObjectURL(blobUrl);

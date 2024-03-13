@@ -17,7 +17,6 @@
         <button id="toDallePageBtn" style="display: none;">Create Image for your playlist</button>
     </div>
 
-    <!-- Loader div -->
     <div class="loader" style="display: none;"></div>
 
     <script>
@@ -45,26 +44,25 @@
             const response = await fetch(`/artists?playlistId=${playlistId}`);
             if (response.ok) {
                 const data = await response.json();
-                let dataFetchedAndDisplayed = false; // Track if data is successfully fetched and displayed
-
+                let dataFetchedAndDisplayed = false; 
                 if (data && data.artists && Array.isArray(data.artists)) {
                     displayArtists(data.artists);
                     artistsData = data.artists;
-                    dataFetchedAndDisplayed = true; // Update flag
+                    dataFetchedAndDisplayed = true; 
                 } else {
                     console.error('Artists data is not in the expected format:', data);
                 }
                 if (data && data.mostPopularGenre) {
                     displayGenre(data.mostPopularGenre);
                     genreData = data.mostPopularGenre;
-                    dataFetchedAndDisplayed = true; // Update flag
+                    dataFetchedAndDisplayed = true; 
                 } else {
                     console.error('Genre data is missing', data);
                 }
 
                 // Show the button if data is fetched and displayed
                 if (dataFetchedAndDisplayed) {
-                    document.getElementById('toDallePageBtn').style.display = 'block'; // Or 'inline-block'
+                    document.getElementById('toDallePageBtn').style.display = 'block'; 
                 }
 
             } else {
@@ -100,11 +98,10 @@
         }
 
         document.getElementById('toDallePageBtn').addEventListener('click', () => {
-            // Make sure playlistId is defined when constructing URL parameters
             const params = new URLSearchParams({
                 artists: JSON.stringify(artistsData),
                 genre: genreData,
-                playlistId: playlistId  // Correctly use playlistId here
+                playlistId: playlistId 
             }).toString();
             window.location.href = `dalle.html?${params}`;
         });

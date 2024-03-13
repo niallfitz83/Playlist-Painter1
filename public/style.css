@@ -85,10 +85,10 @@ a:hover {
 
 #artists-container {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  align-items: center; /* Center items horizontally */
-  min-height: 200px; /* Example height - adjust as needed */
-  background: #282828; /* Assuming you want to keep the dark theme */
+  flex-direction: column; 
+  align-items: center; 
+  min-height: 200px; 
+  background: #282828; 
   padding: 20px;
   margin-top: 20px;
   border-radius: 5px;
@@ -172,13 +172,12 @@ a:hover {
   transform: translateY(-2px);
 }
 
-/* chatgbt assisted in keeping the styling consistent*/
 
 #art-styles-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center buttons */
-  gap: 10px; /* Space between buttons */
+  align-items: center; 
+  gap: 10px; 
 }
 
 #main-container {
@@ -222,7 +221,6 @@ a:hover {
   transform: translateY(-2px);
 }
 
-/* Updated CSS for the Save button to make it blue */
 #saveBtn {
   background-color: #007BFF; 
   color: white; 
@@ -234,7 +232,7 @@ a:hover {
   color: white;
   transform: translateY(-2px); 
 }
-
+/*https://fdossena.com/?p=html5cool/buttons/i.frag*/
 .art-style-button {
   display: inline-block;
   padding: 0.3em 1.2em;
@@ -268,7 +266,7 @@ a:hover {
 
 
 .selected {
-  box-shadow: 0 0 40px #1ED760; /* Example of a highlight effect */
+  box-shadow: 0 0 40px #1ED760;
 }
 
 
