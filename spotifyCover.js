@@ -39,7 +39,7 @@ async function uploadImageToSpotifyPlaylist(playlistId, imageUrl, accessToken) {
         });
 
         if (!response.ok) {
-            const responseBody = await response.text(); // Properly handle an unsuccessful response
+            const responseBody = await response.text(); 
             console.error(`Failed to upload image to Spotify: ${response.statusText}`);
             return { success: false, message: `Error uploading image to Spotify: ${responseBody}` };
         }
